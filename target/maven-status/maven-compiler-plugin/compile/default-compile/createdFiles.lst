@@ -1,0 +1,5 @@
+com/app/geoTracker/service/LocationService.class
+com/app/geoTracker/LocationController/LocationController.class
+com/app/geoTracker/service/EmailService.class
+com/app/geoTracker/dto/DeviceLocationRequest.class
+com/app/geoTracker/GeoTrackerApplication.class
