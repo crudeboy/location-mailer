@@ -1,12 +1,17 @@
 package com.app.geoTracker.service;
 
 import com.app.geoTracker.dto.DeviceLocationRequest;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class LocationService {
 
     private static final double HOME_LAT = 6.5244;  // Example: Lagos
@@ -16,16 +21,28 @@ public class LocationService {
     private final EmailService emailService;
     private final Map<String, Boolean> deviceInsideHome = new ConcurrentHashMap<>();
 
-    public LocationService(EmailService emailService) {
-        this.emailService = emailService;
+    @PostConstruct
+    void init() {
+        deviceInsideHome.put("LAPTOP", true);
     }
+
 
     public void processLocation(DeviceLocationRequest request) {
         boolean inside = isWithinHome(request.getLatitude(), request.getLongitude());
         Boolean wasInside = deviceInsideHome.get(request.getDeviceId());
         deviceInsideHome.put(request.getDeviceId(), inside);
+        log.info("Device is inside: {}", inside);
 
-        if (wasInside != null && wasInside && !inside) {
+        /**
+         * Send email only when the device has a recorded location state,
+          was previously inside the home zone, and is now outside.
+         (If there's no prior record, or the device remains outside, no email is sent.)
+         */
+        Boolean deviceNotHomeAnyMore = wasInside != null && wasInside && !inside;
+        log.info("Device is home: {}", deviceNotHomeAnyMore);
+
+        if (deviceNotHomeAnyMore) {
+            log.info("Device is out of Home location...");
             emailService.sendAlert(request.getDeviceId());
         }
     }
