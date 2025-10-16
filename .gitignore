@@ -25,10 +25,15 @@ bin/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+### OS ###
 .DS_Store
+
+### Environment ###
 .env
+
+### Build ###
 target/
+
 
 # IntelliJ IDEA
 .idea/
