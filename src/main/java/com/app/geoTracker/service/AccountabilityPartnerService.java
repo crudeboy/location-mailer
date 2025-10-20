@@ -2,9 +2,11 @@ package com.app.geoTracker.service;
 
 import com.app.geoTracker.dto.AccountabilityPartnerRequestDto;
 import com.app.geoTracker.dto.AccountabilityPartnerResponseDto;
+import com.app.geoTracker.exception.ApiException;
 import com.app.geoTracker.model.AccountabilityPartner;
 import com.app.geoTracker.repository.AccountabilityPartnerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,13 +37,13 @@ public class AccountabilityPartnerService {
 
     public AccountabilityPartnerResponseDto getById(Long id) {
         AccountabilityPartner p = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Partner not found"));
+                .orElseThrow(() -> new ApiException("Partner not found", HttpStatus.BAD_REQUEST));
         return new AccountabilityPartnerResponseDto(p.getId(), p.getName(), p.getEmail());
     }
 
     public AccountabilityPartnerResponseDto update(Long id, AccountabilityPartnerRequestDto dto) {
         AccountabilityPartner partner = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Partner not found"));
+                .orElseThrow(() -> new ApiException("Partner not found", HttpStatus.BAD_REQUEST));
 
         partner.setName(dto.name());
         partner.setEmail(dto.email());

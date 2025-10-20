@@ -18,8 +18,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserResponseDto> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
@@ -44,5 +44,15 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{userId}/accountability-partners/{apId}")
+    public ResponseEntity<UserResponseDto> addAp(@PathVariable Long userId, @PathVariable Long apId) {
+        return ResponseEntity.ok(userService.addApToUser(userId, apId));
+    }
+
+    @PostMapping("/{userId}/device/{deviceId}")
+    public ResponseEntity<UserResponseDto> addDevice(@PathVariable Long userId, @PathVariable Long deviceId) {
+        return ResponseEntity.ok(userService.addDeviceToUser(userId, deviceId));
     }
 }

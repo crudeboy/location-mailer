@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/locations")
 @RequiredArgsConstructor
 public class LocationController {
 

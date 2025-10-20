@@ -23,9 +23,11 @@ public class User {
 
     private String email;
 
+    @Builder.Default
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Device> devices = new HashSet<>();
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "user_accountability_partners",

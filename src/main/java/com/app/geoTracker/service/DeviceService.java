@@ -2,11 +2,13 @@ package com.app.geoTracker.service;
 
 import com.app.geoTracker.dto.DeviceRequestDto;
 import com.app.geoTracker.dto.DeviceResponseDto;
+import com.app.geoTracker.exception.ApiException;
 import com.app.geoTracker.model.Device;
 import com.app.geoTracker.model.User;
 import com.app.geoTracker.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.app.geoTracker.repository.UserRepository;
 
@@ -23,7 +25,7 @@ public class DeviceService {
 
     public DeviceResponseDto createDevice(DeviceRequestDto dto) {
         User owner = userRepository.findById(dto.ownerId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ApiException("User not found", HttpStatus.NOT_FOUND));
 
         Device device =  Device.builder()
                 .deviceId(dto.serialNumber())
@@ -53,7 +55,7 @@ public class DeviceService {
 
     public DeviceResponseDto getDevice(Long id) {
         Device device = deviceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Device not found"));
+                .orElseThrow(() -> new ApiException("Device not found", HttpStatus.NOT_FOUND));
         return new DeviceResponseDto(
                 device.getId(),
                 device.getType(),
@@ -64,14 +66,14 @@ public class DeviceService {
 
     public DeviceResponseDto updateDevice(Long id, DeviceRequestDto dto) {
         Device device = deviceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Device not found"));
+                .orElseThrow(() -> new ApiException("Device not found", HttpStatus.NOT_FOUND));
 
         device.setType(dto.type());
         device.setDeviceId(dto.serialNumber());
 
         if (dto.ownerId() != null) {
             User owner = userRepository.findById(dto.ownerId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new ApiException("User not found", HttpStatus.NOT_FOUND));
             device.setOwner(owner);
         }
 
