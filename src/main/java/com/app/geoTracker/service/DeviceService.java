@@ -24,15 +24,18 @@ public class DeviceService {
     private final UserRepository userRepository;
 
     public DeviceResponseDto createDevice(DeviceRequestDto dto) {
+        log.info("Creating a device with id {} for {}", dto.serialNumber(), dto.ownerId());
         User owner = userRepository.findById(dto.ownerId())
                 .orElseThrow(() -> new ApiException("User not found", HttpStatus.NOT_FOUND));
+        log.info("Owner found {}", owner.getId());
 
         Device device =  Device.builder()
                 .deviceId(dto.serialNumber())
                 .type(dto.type())
                 .owner(owner)
                 .build();
-        deviceRepository.save(device);
+        device = deviceRepository.save(device);
+        log.info("Device created {}", device.getId());
 
         return new DeviceResponseDto(
                 device.getId(),
@@ -88,6 +91,10 @@ public class DeviceService {
     }
 
     public void deleteDevice(Long id) {
+        Device device = deviceRepository.findById(id)
+                .orElseThrow(() -> new ApiException("Device not found", HttpStatus.NOT_FOUND));
+
         deviceRepository.deleteById(id);
+        log.info("Device deleted {}", device.getId());
     }
 }

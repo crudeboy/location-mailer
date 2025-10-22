@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Console appender (normal synchronous output) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Async wrapper around the console appender -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- Drop oldest logs if queue fills -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- Queue size for pending log events -->
+        <queueSize>512</queueSize>
+        <appender-ref ref="CONSOLE" />
+    </appender>
+
+    <!-- Root logger: all logs go through the async appender -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC" />
+    </root>
+
+</configuration>

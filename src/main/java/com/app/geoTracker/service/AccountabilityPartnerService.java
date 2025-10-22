@@ -6,13 +6,14 @@ import com.app.geoTracker.exception.ApiException;
 import com.app.geoTracker.model.AccountabilityPartner;
 import com.app.geoTracker.repository.AccountabilityPartnerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class AccountabilityPartnerService {
 
@@ -40,6 +41,11 @@ public class AccountabilityPartnerService {
                 .orElseThrow(() -> new ApiException("Partner not found", HttpStatus.BAD_REQUEST));
         return new AccountabilityPartnerResponseDto(p.getId(), p.getName(), p.getEmail());
     }
+    /**
+     * Improvement
+     * 1. Use an Update DTO not teh same request DTO for the update
+     * 2. Use an entity patcher class
+     */
 
     public AccountabilityPartnerResponseDto update(Long id, AccountabilityPartnerRequestDto dto) {
         AccountabilityPartner partner = repository.findById(id)
@@ -51,7 +57,11 @@ public class AccountabilityPartnerService {
         return new AccountabilityPartnerResponseDto(updated.getId(), updated.getName(), updated.getEmail());
     }
 
+
     public void delete(Long id) {
+        AccountabilityPartner accountabilityPartner = repository.findById(id)
+                .orElseThrow(() -> new ApiException("Partner not found, already deleted.", HttpStatus.BAD_REQUEST));
         repository.deleteById(id);
+        log.info("Deletion completed for {}", accountabilityPartner.getId());
     }
 }

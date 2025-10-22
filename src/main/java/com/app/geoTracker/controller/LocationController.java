@@ -1,4 +1,4 @@
-package com.app.geoTracker.LocationController;
+package com.app.geoTracker.controller;
 
 import com.app.geoTracker.dto.DeviceLocationRequest;
 import com.app.geoTracker.service.LocationService;

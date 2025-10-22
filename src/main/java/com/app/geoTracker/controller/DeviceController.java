@@ -1,7 +1,8 @@
-package com.app.geoTracker.LocationController;
+package com.app.geoTracker.controller;
 
 import com.app.geoTracker.dto.DeviceRequestDto;
 import com.app.geoTracker.dto.DeviceResponseDto;
+import com.app.geoTracker.dto.MessageResponseDto;
 import com.app.geoTracker.service.DeviceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +42,8 @@ public class DeviceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<MessageResponseDto> delete(@PathVariable Long id) {
         deviceService.deleteDevice(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new MessageResponseDto("Device successfully deleted."));
     }
 }

@@ -1,34 +1,35 @@
-package com.app.geoTracker.LocationController;
+package com.app.geoTracker.controller;
 
 import com.app.geoTracker.dto.AccountabilityPartnerRequestDto;
 import com.app.geoTracker.dto.AccountabilityPartnerResponseDto;
+import com.app.geoTracker.dto.MessageResponseDto;
 import com.app.geoTracker.service.AccountabilityPartnerService;
 import com.app.geoTracker.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/partners")
+@RestController @Slf4j
+@RequestMapping("/accountabilityPartner")
 @RequiredArgsConstructor
 public class AccountabilityPartnerController {
 
     private final AccountabilityPartnerService partnerService;
-    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<AccountabilityPartnerResponseDto> create(@Valid @RequestBody AccountabilityPartnerRequestDto dto) {
-        AccountabilityPartnerResponseDto created = partnerService.createPartner(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(partnerService.createPartner(dto));
     }
 
     @GetMapping
     public ResponseEntity<List<AccountabilityPartnerResponseDto>> getAll() {
-        return ResponseEntity.ok(partnerService.getAll());
+        var accountabilityPartners = partnerService.getAll();
+        return ResponseEntity.ok(accountabilityPartners);
     }
 
     @GetMapping("/{id}")
@@ -42,8 +43,9 @@ public class AccountabilityPartnerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<MessageResponseDto> delete(@PathVariable Long id) {
         partnerService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                new MessageResponseDto("Accountability Partner successfully deleted."));
     }
 }
